@@ -4,11 +4,11 @@ Simple and pragmatic Finite State Machine designed for TypeScript
 ## Documentation
 ### Installation
 ```
-npm i fsmy
+npm i @javascriptosaur/fsmy
 ```
 ### Example
 ```
-import { FSM } from 'fsmy';
+import { FSM } from '@javascriptosaur/fsmy';
 
 let timerId;
 
