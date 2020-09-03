@@ -1,5 +1,5 @@
 {
-  "name": "fsmy",
+  "name": "@javascriptosaur/fsmy",
   "version": "0.0.1",
   "description": "Finite State Machine",
   "main": "dist/fsmy.js",

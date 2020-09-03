@@ -17,7 +17,7 @@ module.exports = {
     plugins: [
         new CleanWebpackPlugin(),
         new DtsBundleWebpack({
-            name: 'fsmy',
+            name: '@javascriptosaur/fsmy',
             main: 'dist/index.d.ts',
             removeSource: true,
         })
