@@ -28,6 +28,7 @@ module.exports = {
     output: {
         filename: '@javascriptosaur/fsmy.js',
         path: path.resolve(__dirname, 'dist'),
-        library: 'fsmy'
+        library: 'fsmy',
+        libraryTarget: "umd"
     }
 }
