@@ -1,0 +1,35 @@
+{
+  "name": "fsmy",
+  "version": "0.0.1",
+  "description": "Finite State Machine",
+  "main": "dist/fsmy.js",
+  "types": "dist/fsmy.d.ts",
+  "scripts": {
+    "build": "webpack --mode=production"
+  },
+  "author": "javascriptosaur",
+  "license": "MIT",
+  "homepage": "https://github.com/javascriptosaur/fsmy#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "clean-webpack-plugin": "^3.0.0",
+    "dts-bundle-webpack": "^1.0.2",
+    "ts-loader": "^8.0.1",
+    "typescript": "^3.9.7",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/javascriptosaur/fsmy.git"
+  },
+  "keywords": [
+    "fsm",
+    "finite",
+    "state",
+    "machine"
+  ],
+  "bugs": {
+    "url": "https://github.com/javascriptosaur/fsmy/issues"
+  }
+}
