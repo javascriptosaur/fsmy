@@ -26,7 +26,7 @@ module.exports = {
         extensions: ['.ts', '.js']
     },
     output: {
-        filename: 'fsmy.js',
+        filename: '@javascriptosaur/fsmy.js',
         path: path.resolve(__dirname, 'dist'),
         library: 'fsmy'
     }

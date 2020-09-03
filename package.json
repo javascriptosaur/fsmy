@@ -1,9 +1,9 @@
 {
   "name": "@javascriptosaur/fsmy",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Finite State Machine",
-  "main": "dist/fsmy.js",
-  "types": "dist/fsmy.d.ts",
+  "main": "dist/@javascriptosaur/fsmy.js",
+  "types": "dist/@javascriptosaur/fsmy.d.ts",
   "scripts": {
     "build": "webpack --mode=production"
   },
