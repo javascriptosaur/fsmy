@@ -1,6 +1,6 @@
 {
   "name": "@javascriptosaur/fsmy",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Finite State Machine",
   "main": "dist/@javascriptosaur/fsmy.js",
   "types": "dist/@javascriptosaur/fsmy.d.ts",

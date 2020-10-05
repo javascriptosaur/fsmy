@@ -24,17 +24,16 @@ export default class FSM<T extends string | number>{
     }
 
     transition(to: T, data?: {}) {
-        setTimeout(async () => {
-            const from = this._currentState;
-            const fromName = this.getStateName && this.getStateName(from) || from;
-            const toName = this.getStateName && this.getStateName(to) || to;
+        const from = this._currentState;
+        const fromName = this.getStateName && this.getStateName(from) || from;
+        const toName = this.getStateName && this.getStateName(to) || to;
 
-            if (this._transitionInProcess) {
-                console.error(`transition in process to ${fromName}`);
-                return;
-            }
-            if (this.canTransition(to)) {
-
+        if (this._transitionInProcess) {
+            console.error(`transition in process to ${fromName}`);
+            return;
+        }
+        if (this.canTransition(to)) {
+            setTimeout(async () => {
                 this._currentState = to;
 
                 console.log(`transition from ${fromName} to ${toName}`);
@@ -51,11 +50,10 @@ export default class FSM<T extends string | number>{
                 onEnterStateEnd && await onEnterStateEnd({ from, to, data });
 
                 this._transitionInProcess = false;
-
-            } else {
-                console.error(`Can't transition from ${fromName} to ${toName}`);
-            }
-        })
+            })
+        } else {
+            console.error(`Can't transition from ${fromName} to ${toName}`);
+        }
     }
 
     getCurrentState(): T {
