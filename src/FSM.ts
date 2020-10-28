@@ -1,7 +1,8 @@
 import { Transitions } from "./Transitions";
 
 export default class FSM<T extends string | number>{
-    private _currentState: T;
+    private _currentState: T = null;
+    private _nextState: T = null;
     private _transitionInProcess: boolean = false;
     onEnterState: (obj?: { from: T, to: T, data?: {} }) => Promise<void> | void;
     onLeaveState: (obj?: { from: T, to: T, data?: {} }) => Promise<void> | void;
@@ -23,34 +24,41 @@ export default class FSM<T extends string | number>{
         this._transitions = null;
     }
 
-    transition(to: T, data?: {}) {
+    async transition(to: T, data?: {}) {
         const from = this._currentState;
-        const fromName = this.getStateName && this.getStateName(from) || from;
-        const toName = this.getStateName && this.getStateName(to) || to;
+        const fromName = this?.getStateName?.(from) || from;
+        const toName = this?.getStateName?.(to) || to;
 
         if (this._transitionInProcess) {
-            console.error(`transition in process to ${fromName}`);
+            if(this._nextState === null && this.canTransition(to)){
+                this._nextState = to;
+            }else{
+                console.error(`transition in process to ${fromName}`);
+            }
             return;
         }
         if (this.canTransition(to)) {
-            setTimeout(async () => {
-                this._currentState = to;
+            this._nextState = null;
+            this._transitionInProcess = true;
+            
+            this._currentState = to;
 
-                console.log(`transition from ${fromName} to ${toName}`);
+            console.log(`transition from ${fromName} to ${toName}`);
 
-                const { onLeaveStateStart, onLeaveStateEnd } = this._transitions[from]?.state || {};
-                const { onEnterStateStart, onEnterStateEnd } = this._transitions[to]?.state || {};
-                const { onEnterState, onLeaveState } = this;
+            const { onLeaveStateStart, onLeaveStateEnd } = this._transitions[from]?.state || {};
+            const { onEnterStateStart, onEnterStateEnd } = this._transitions[to]?.state || {};
+            const { onEnterState, onLeaveState } = this;
 
-                this._transitionInProcess = true;
 
-                await Promise.all([onLeaveState && onLeaveState({ from, to, data }), onLeaveStateStart && onLeaveStateStart({ from, to, data })]);
-                onLeaveStateEnd && await onLeaveStateEnd({ from, to, data })
-                await Promise.all([onEnterState && onEnterState({ from, to, data }), onEnterStateStart && onEnterStateStart({ from, to, data })]);
-                onEnterStateEnd && await onEnterStateEnd({ from, to, data });
+            await Promise.all([onLeaveState && onLeaveState({ from, to, data }), onLeaveStateStart && onLeaveStateStart({ from, to, data })]);
+            onLeaveStateEnd && await onLeaveStateEnd({ from, to, data })
+            await Promise.all([onEnterState && onEnterState({ from, to, data }), onEnterStateStart && onEnterStateStart({ from, to, data })]);
+            onEnterStateEnd && await onEnterStateEnd({ from, to, data });
 
-                this._transitionInProcess = false;
-            })
+            this._transitionInProcess = false;
+            if(this._nextState !== null){
+                this.transition(this._nextState);
+            }
         } else {
             console.error(`Can't transition from ${fromName} to ${toName}`);
         }
@@ -61,6 +69,6 @@ export default class FSM<T extends string | number>{
     }
 
     canTransition(state: T): boolean {
-        return !this._currentState || this._transitions[this._currentState].to.indexOf(state) > -1
+        return this._currentState === null || this._transitions[this._currentState].to.indexOf(state) > -1
     }
 }
