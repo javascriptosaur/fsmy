@@ -23,7 +23,7 @@ export default class FSM<T extends string | number>{
         this._transitions = null;
     }
 
-    transition(to: T, data?: {}) {
+    async transition(to: T, data?: {}) {
         const from = this._currentState;
         const fromName = this.getStateName && this.getStateName(from) || from;
         const toName = this.getStateName && this.getStateName(to) || to;
@@ -33,24 +33,22 @@ export default class FSM<T extends string | number>{
             return;
         }
         if (this.canTransition(to)) {
-            setTimeout(async () => {
-                this._currentState = to;
+            this._transitionInProcess = true;
 
-                console.log(`transition from ${fromName} to ${toName}`);
+            this._currentState = to;
 
-                const { onLeaveStateStart, onLeaveStateEnd } = this._transitions[from]?.state || {};
-                const { onEnterStateStart, onEnterStateEnd } = this._transitions[to]?.state || {};
-                const { onEnterState, onLeaveState } = this;
+            console.log(`transition from ${fromName} to ${toName}`);
 
-                this._transitionInProcess = true;
+            const { onLeaveStateStart, onLeaveStateEnd } = this._transitions[from]?.state || {};
+            const { onEnterStateStart, onEnterStateEnd } = this._transitions[to]?.state || {};
+            const { onEnterState, onLeaveState } = this;
 
-                await Promise.all([onLeaveState && onLeaveState({ from, to, data }), onLeaveStateStart && onLeaveStateStart({ from, to, data })]);
-                onLeaveStateEnd && await onLeaveStateEnd({ from, to, data })
-                await Promise.all([onEnterState && onEnterState({ from, to, data }), onEnterStateStart && onEnterStateStart({ from, to, data })]);
-                onEnterStateEnd && await onEnterStateEnd({ from, to, data });
+            await Promise.all([onLeaveState && onLeaveState({ from, to, data }), onLeaveStateStart && onLeaveStateStart({ from, to, data })]);
+            onLeaveStateEnd && await onLeaveStateEnd({ from, to, data })
+            await Promise.all([onEnterState && onEnterState({ from, to, data }), onEnterStateStart && onEnterStateStart({ from, to, data })]);
+            onEnterStateEnd && await onEnterStateEnd({ from, to, data });
 
-                this._transitionInProcess = false;
-            })
+            this._transitionInProcess = false;
         } else {
             console.error(`Can't transition from ${fromName} to ${toName}`);
         }
