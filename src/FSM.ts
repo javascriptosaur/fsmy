@@ -3,8 +3,8 @@ import { Transitions } from "./Transitions";
 export default class FSM<T extends string | number>{
     private _currentState: T;
     private _transitionInProcess: boolean = false;
-    onEnterState: (obj?: { from: T, to: T, data?: {} }) => Promise<void> | void;
-    onLeaveState: (obj?: { from: T, to: T, data?: {} }) => Promise<void> | void;
+    onEnterState: (obj?: { from: T, to: T, data?: {}, fsm:FSM<T> }) => Promise<void> | void;
+    onLeaveState: (obj?: { from: T, to: T, data?: {}, fsm:FSM<T> }) => Promise<void> | void;
     getStateName: (key: T) => string;
 
     constructor(private _transitions: Transitions<T>, initState: T) {
@@ -43,10 +43,10 @@ export default class FSM<T extends string | number>{
             const { onEnterStateStart, onEnterStateEnd } = this._transitions[to]?.state || {};
             const { onEnterState, onLeaveState } = this;
 
-            await Promise.all([onLeaveState && onLeaveState({ from, to, data }), onLeaveStateStart && onLeaveStateStart({ from, to, data })]);
-            onLeaveStateEnd && await onLeaveStateEnd({ from, to, data })
-            await Promise.all([onEnterState && onEnterState({ from, to, data }), onEnterStateStart && onEnterStateStart({ from, to, data })]);
-            onEnterStateEnd && await onEnterStateEnd({ from, to, data });
+            await Promise.all([onLeaveState && onLeaveState({ from, to, data, fsm:this }), onLeaveStateStart && onLeaveStateStart({ from, to, data, fsm:this })]);
+            onLeaveStateEnd && await onLeaveStateEnd({ from, to, data, fsm:this })
+            await Promise.all([onEnterState && onEnterState({ from, to, data, fsm:this }), onEnterStateStart && onEnterStateStart({ from, to, data, fsm:this })]);
+            onEnterStateEnd && await onEnterStateEnd({ from, to, data, fsm:this });
 
             this._transitionInProcess = false;
         } else {
